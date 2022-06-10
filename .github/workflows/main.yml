@@ -43,6 +43,6 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
            aws s3api create-bucket --bucket ${{ env.S3_BUCKET_NAME }}
-           aws s3 cp --r ./fortune.zip s3://static-web-hosting-portal/
+           aws s3 cp fortune.zip s3://static-web-hosting-portal/ --recursive
         #   aws s3 website s3://static-web-hosting-portal/ --index-document index.html --error-document error.html
       
