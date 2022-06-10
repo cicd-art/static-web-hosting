@@ -1,0 +1,48 @@
+name: Deploy Mint Web Portal
+
+env:
+  S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET }}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+#The job or workflow run requires a permissions setting with id-token: write. 
+#You won't be able to request the OIDC JWT ID token if the permissions setting for id-token is set to read or none.
+# permission can be added at job level or workflow level 
+permissions:
+  id-token: write 
+  contents: write # This is required for actions/checkout
+
+jobs:
+        
+  deploy-web-portal:
+
+    name: Deploy web portal
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      
+      - run: echo ${{ github.ref }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: cicd-art/static-web-hosting
+          ref: feat/cicd
+
+      - name: Preflight configuration installs terragrunt and AWS cli creds
+        uses: ./.github/actions
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+      
+      - name: Create an s3 bucket and host the static website
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+           aws s3api create-bucket --bucket ${{ env.S3_BUCKET_NAME }}
+           aws s3 cp -r ./fortune.zip s3://static-web-hosting-portal/
+           aws s3 website s3://static-web-hosting-portal/ --index-document index.html --error-document error.html
+      
