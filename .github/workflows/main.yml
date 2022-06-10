@@ -45,5 +45,5 @@ jobs:
            aws s3api create-bucket --bucket ${{ env.S3_BUCKET_NAME }}
            unzip fortune.zip -d build_folder
            aws s3 cp build_folder s3://static-web-hosting-portal/ --recursive
-        #   aws s3 website s3://static-web-hosting-portal/ --index-document index.html --error-document error.html
+           aws s3 website s3://static-web-hosting-portal/ --index-document index.html --error-document error.html
       
