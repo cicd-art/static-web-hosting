@@ -8,7 +8,7 @@ on:
     branches:
       - main
   pull_request:
-#The job or workflow run requires a permissions setting with id-token: write. 
+#The job or workflow run requires a permissions setting with id-token: write.
 #You won't be able to request the OIDC JWT ID token if the permissions setting for id-token is set to read or none.
 # permission can be added at job level or workflow level 
 permissions:
